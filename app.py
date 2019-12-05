@@ -74,24 +74,39 @@ def login():
 @app.route("/account")
 def account():
     if "user" in session.keys():
+        sql= "SELECT postur FROM posts WHERE user ="
+        user = session["user"]
+        prent = user['nafn']
+        cursor.execute(sql+"'"+prent+"'")
+        gogn =  cursor.fetchall()
         if session["user"]["username"] != None:
-            return rend("account.html", user = session["user"])
+            return rend("account.html", user = session["user"], gogn = gogn)
     return index()
 @app.route("/logout")
 def logout():
     session["user"] ={"uname":None,"pass":None,"nafn":None}
     return index()
 
-@app.route("/account/create",methods=['POST'])
+
+@app.route("/account/eida",methods=['POST'])
 def eida():
     if "user" in session.keys():
-        mycursor = mydb.cursor()
+        sql2= "SELECT postur FROM posts WHERE user ="
+        user = session["user"]
+        prent = user['nafn']
+        cursor.execute(sql2+"'"+prent+"'")
+        gogn =  cursor.fetchall()
+        user = session["user"]
+        prent = user['nafn']
+        print(prent)
+        print(user)
         sql = "DELETE FROM posts WHERE user ="
-        print(sql+user.user)
-        mycursor.execute(sql+user.user)
-        return rend("account.html", user = session["user"])
+        print(sql+"'"+prent+"'")
+        cursor.execute(sql+"'"+prent+"'")
+        return rend("account.html", user = session["user"], gogn = gogn)
     else: return index()
-@app.route("/account/eida",methods=['POST'])
+
+@app.route("/index/create",methods=['POST'])
 def addpost():
     r=request.form
     user2 = session["user"]

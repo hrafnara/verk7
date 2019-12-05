@@ -6,5 +6,9 @@
 <p>Display name:{{user.nafn}}</p>
 <form action="/account/eida" method="post">
     <p><input type="submit" value="eyða pósti"></p>
+
 <h1>Pósturinn þinn</h1>
+{% for x in gogn %}
+<p>{{x[0]}}</p>
+{% endfor %}
 {% endblock %}
