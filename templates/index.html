@@ -5,8 +5,15 @@
 <p>Halló {{user.nafn}}</p>
 <a href="/account">account control</a>
 <a href="/logout">Logout</a>
+<form action="/index/create" method="post">
+    <p><input type="text" name="postur" placeholder="hverju viltu pósta?" required></p>
+    <p><input type="submit" value="post"></p>
 {% else %}
 <a href="/login">Login</a>
 <a href="/signup">Sign up</a>
 {% endif %}
+<h1>Póstar</h1>
+{% for x in rows %}
+<p>{{x[1]}}</p>
+{% endfor %}
 {% endblock %}

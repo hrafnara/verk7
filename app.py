@@ -6,6 +6,7 @@ connection = pymysql.connect(host='tsuts.tskoli.is', port=3306, user='1209023850
 cursor = connection.cursor()
 #alltaf gaman að fara overboard
 app.secret_key = secrets.token_hex(255)
+
 def authorize(user):
     pass
     #todo tengja við localhost, muna að breyta aftur
@@ -25,10 +26,11 @@ def index():
         user = {"uname":None,"pass":None,"nafn":None}
     else:
         user = session["user"]
-    print(user)
-    print(session)
-    print(session.keys())
-    return rend("index.html", user=user)
+    cursor.execute("SELECT * FROM posts")
+    rows = cursor.fetchall()
+    print(rows)
+    return rend("index.html", user = user, rows = rows)
+
 @app.route("/signup")
 def signup():
     return rend("signup.html",code=None)
@@ -68,6 +70,7 @@ def login():
         print(rows)
         return rend("login.html", code=1)
     return rend("login.html", code=0)
+
 @app.route("/account")
 def account():
     if "user" in session.keys():
@@ -79,7 +82,32 @@ def logout():
     session["user"] ={"uname":None,"pass":None,"nafn":None}
     return index()
 
+@app.route("/account/create",methods=['POST'])
+def eida():
+    if "user" in session.keys():
+        mycursor = mydb.cursor()
+        sql = "DELETE FROM posts WHERE user ="
+        print(sql+user.user)
+        mycursor.execute(sql+user.user)
+        return rend("account.html", user = session["user"])
+    else: return index()
+@app.route("/account/eida",methods=['POST'])
+def addpost():
+    r=request.form
+    user2 = session["user"]
+    num = 1
+    name = (user2["nafn"])
+    cursor.execute("SELECT * FROM posts")
+    rows = cursor.fetchall()
+    if request.form['postur'] in map(lambda x: x[0], rows):
+        pass
+    cursor.execute("""INSERT INTO posts (user, postur, num) VALUES
+    (%s, %s, %s);""" % 
+    (connection.escape(name),
+    connection.escape(r['postur']),
+    connection.escape(num)))
+    return rend("index.html", user = user2, rows =rows)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-1
